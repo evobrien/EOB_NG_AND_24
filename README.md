@@ -35,8 +35,12 @@ The search/list screen which deviates somewhat from my usual approaches to desig
 In retrospect it may have been better to use manual paging as paging3 distorts the design somewhat - tends to become tightly coupled with the libary which is definitely an issue. 
 A small database is included for caching. The db is only used by the detail feature for now but the intent was to extend it's use in the search/list screen for more efficient caching and paging, with network requests only being required if there was no query related data locally (I ran out of time to implement that).
 
+Testing:
 Turbine:
-Turbine is used for some unit tests as it makes it easy to handle stateflow events
+- Turbine is used for some unit tests as it makes it easy to handle stateflow events
+Mockk
+- Mockk is used for all mocking
+
 
 Issues:
 Unit tests and Paging3
