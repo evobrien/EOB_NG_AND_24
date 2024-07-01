@@ -53,6 +53,7 @@ Unit tests and Paging3
 - Third, the UI and theming is not great - I just ran out of time for that. So the UI is basically functional but not pretty.
 - Fourth, the database caching/paging  for the search screen is not integrated (again, time constraints)
 - Fifth, movies that have no posterpath are filtered out of the search screen - this was just a cosmetic and time related decision (I did not have time to find a good placeholder image for those so it looks better for now filtering those movies out)
+- Sixth, the list screen needs a placeholder at the bottom for loading next page events and also a retry button plaholder for failed queries (right now there is no feedback there)
   
   
 
