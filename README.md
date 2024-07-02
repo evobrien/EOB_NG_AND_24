@@ -44,7 +44,10 @@ Mockk
 
 Issues:
 Unit tests and Paging3
-- I had issues with writing tests for the viewmodel and repository for the search screen. I'm stll trying to figure out what the issue us - it's likely coroutine related. The tests that aren't working are disabled. The app itself works without issue in this area though The tests for the paging data source in this area have been implemented and they are working fine. Also the tests for the details section and related repos are implemented and working fine.
+- I had issues with writing tests for the viewmodel and repository for the search screen. There are issues with testability in Paging3. Basically the paging3 lib has a number of classes that are not directly testable. I've added a function that uses reflection to get data from the PagingData class which makes the happy path tesable in the view model.
+-  The tests for the paging data source in this area have been implemented and they are working fine.
+-  Also the tests for the details section and related repos are implemented and working fine.
+-  The tests for the Movie search repo and the error path in the view model are disabled for now until I figure out a way to test those.
 
 - UI issues:
 - These are things I just didn't get time to implement
