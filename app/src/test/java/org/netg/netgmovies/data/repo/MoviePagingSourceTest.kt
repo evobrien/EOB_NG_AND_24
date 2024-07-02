@@ -74,7 +74,7 @@ class MoviePagingSourceTest {
     }
 
     @Test
-    fun test() = runTest {
+    fun `test appending paging source items`() = runTest {
         val appendList = listOf(
             Movie(
                 id = 1, adult = false, genreIds = listOf(1, 2, 3),
