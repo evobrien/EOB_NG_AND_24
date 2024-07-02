@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,7 +53,7 @@ fun DefaultAppBar(navController: NavController) {
             )
         },
         navigationIcon = {
-            if (navController.previousBackStackEntry != null) {
+            // if (navController.previousBackStackEntry != null) {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
                         Icons.Filled.ArrowBack, contentDescription = stringResource(
@@ -62,15 +61,15 @@ fun DefaultAppBar(navController: NavController) {
                         )
                     )
                 }
-            } else {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        Icons.Filled.Menu, contentDescription = stringResource(
-                            id = R.string.desc_home
-                        )
-                    )
-                }
-            }
+            /* } else {
+                 IconButton(onClick = { navController.popBackStack() }) {
+                     Icon(
+                         Icons.Filled.Menu, contentDescription = stringResource(
+                             id = R.string.desc_home
+                         )
+                     )
+                 }
+             }*/
         },
         colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.primaryContainer)
 

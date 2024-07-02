@@ -42,7 +42,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import org.netg.netgmovies.data.model.Movie
-import org.netg.netgmovies.ui.feature.common.compose.DefaultAppBar
 import org.netg.netgmovies.ui.feature.common.compose.ErrorScreen
 import org.netg.netgmovies.ui.feature.common.compose.LoadingProgress
 import org.netg.netgmovies.ui.feature.common.compose.Screen
@@ -58,7 +57,6 @@ fun SearchScreen(viewModel: SearchViewModel, navHostController: NavHostControlle
     Screen(
         appbar = {
             Column {
-                DefaultAppBar(navController = navHostController)
                 SearchSection(onSearch = { viewModel.onEvent(SearchScreenEvent.SearchQuery(it)) })
             }
         },
