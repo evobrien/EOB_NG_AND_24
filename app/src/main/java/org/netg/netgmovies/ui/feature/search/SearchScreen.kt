@@ -2,6 +2,7 @@ package org.netg.netgmovies.ui.feature.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -207,7 +209,9 @@ private fun MovieCard(
                     modifier = Modifier.fillMaxWidth(),
                     model = "https://image.tmdb.org/t/p/w500$it",
                     loading = {
-                        CircularProgressIndicator()
+                        Box(contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
                     },
                     contentDescription = "Movie image",
                     contentScale = ContentScale.Crop
