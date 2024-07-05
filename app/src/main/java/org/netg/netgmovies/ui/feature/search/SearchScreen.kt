@@ -24,8 +24,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -38,10 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import org.netg.netgmovies.data.model.Movie
 import org.netg.netgmovies.ui.feature.common.compose.ErrorScreen
@@ -49,12 +50,13 @@ import org.netg.netgmovies.ui.feature.common.compose.LoadingProgress
 import org.netg.netgmovies.ui.feature.common.compose.Screen
 import org.netg.netgmovies.ui.feature.search.viewmodel.SearchScreenEvent
 import org.netg.netgmovies.ui.feature.search.viewmodel.SearchViewModel
+import org.netg.netgmovies.ui.feature.search.viewmodel.StateData
 import org.netg.netgmovies.ui.navigation.navigateToDetails
 
 @Composable
 fun SearchScreen(viewModel: SearchViewModel, navHostController: NavHostController) {
 
-    val result = viewModel.uiState.collectAsLazyPagingItems()
+    val result = viewModel.uiState.collectAsStateWithLifecycle()
 
     Screen(
         appbar = {
@@ -63,22 +65,27 @@ fun SearchScreen(viewModel: SearchViewModel, navHostController: NavHostControlle
             }
         },
         content = {
-            when (result.loadState.refresh) {
-                is LoadState.Loading -> {
+            when (result.value) {
+                is StateData.Loading -> {
                     LoadingProgress()
                 }
 
-                is LoadState.Error -> {
+                is StateData.Error -> {
                     ErrorScreen()
                 }
 
+                is StateData.Init -> {
+                    ErrorScreen((result.value as StateData.Init).initMessage)
+                }
+
                 else -> {
-                    if (result.itemCount <= 0) {
+                    val response = (result.value as StateData.Success).data
+                    if (response.results.isEmpty()) {
                         ErrorScreen("No results available")
                     } else {
-                        EndlessMovieList(movies = result, navigate = {
+                        EndlessMovieList(movies = response.results, navigate = {
                             navHostController.navigateToDetails(it)
-                        })
+                        }, getMoreData = { viewModel.onEvent(SearchScreenEvent.LoadNextPage()) })
                     }
                 }
             }
@@ -161,9 +168,23 @@ fun SearchSection(onSearch: (String) -> Unit) {
 }
 
 @Composable
-fun EndlessMovieList(movies: LazyPagingItems<Movie>, navigate: (id: Int) -> Unit) {
+fun EndlessMovieList(movies: List<Movie>, navigate: (id: Int) -> Unit, getMoreData: () -> Unit) {
 
     val lazyListState = rememberLazyListState()
+
+    // observe list scrolling
+    val reachedBottom: Boolean by remember {
+        derivedStateOf {
+            val lastVisibleItem = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()
+            lastVisibleItem?.index != 0 && (lastVisibleItem?.index
+                ?: 0) <= lazyListState.layoutInfo.totalItemsCount - 1
+        }
+    }
+
+    // load more if scrolled to bottom
+    LaunchedEffect(reachedBottom) {
+        if (reachedBottom) getMoreData()
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -171,9 +192,9 @@ fun EndlessMovieList(movies: LazyPagingItems<Movie>, navigate: (id: Int) -> Unit
             .fillMaxWidth()
             .padding(4.dp), state = lazyListState
     ) {
-        items(count = movies.itemCount) { index ->
+        items(count = movies.size) { index ->
             val item = movies[index]
-            item?.let {
+            item.let {
                 if (it.backdropPath != null) {
                     MovieCard(navigate, it)
                 }

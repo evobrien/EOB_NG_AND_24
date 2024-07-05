@@ -1,18 +1,19 @@
 package org.netg.netgmovies.ui.feature.search.domain
 
-import androidx.paging.PagingData
-import kotlinx.coroutines.flow.Flow
-import org.netg.netgmovies.data.model.Movie
+import org.netg.netgmovies.data.model.MovieSearchResponse
 import org.netg.netgmovies.data.repo.MovieSearchRepo
 import javax.inject.Inject
 
 interface SearchMovieUseCase {
-    fun invoke(query: String): Flow<PagingData<Movie>>
+    suspend fun invoke(query: String, page: Int): Result<MovieSearchResponse>
 }
 
 class SearchMovieUseCaseImpl @Inject constructor(private val movieSearchRepo: MovieSearchRepo) :
     SearchMovieUseCase {
-    override fun invoke(query: String): Flow<PagingData<Movie>> {
-        return movieSearchRepo.searchByName(query)
+    override suspend fun invoke(query: String, page: Int): Result<MovieSearchResponse> {
+        return runCatching {
+            movieSearchRepo.searchByName(query, page)
+        }
     }
+
 }
